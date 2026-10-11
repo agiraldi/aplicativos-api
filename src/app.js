@@ -99,7 +99,50 @@ app.use(errorHandler);
 if (require.main === module) {
   const PORT = process.env.PORT || 5000;
   connectDB()
-    .then(() => {
+    .then(async () => {
+      const Aplicativo = require('./models/Aplicativo');
+      const count = await Aplicativo.countDocuments();
+      if (count === 0) {
+        await Aplicativo.insertMany([
+          {
+            nome: 'Visual Studio Code',
+            categoria: 'Desenvolvimento',
+            descricao: 'Editor de código-fonte poderoso, leve e altamente extensível com suporte a dezenas de linguagens.',
+            preco: 0,
+            foto: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=600&q=80',
+          },
+          {
+            nome: 'Notion',
+            categoria: 'Produtividade',
+            descricao: 'Espaço de trabalho integrado para anotações, documentos, wikis e gerenciamento ágil de projetos.',
+            preco: 49.90,
+            foto: 'https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=600&q=80',
+          },
+          {
+            nome: 'Figma',
+            categoria: 'Design',
+            descricao: 'Plataforma líder para colaboração e criação de interfaces UI/UX e protótipos em tempo real.',
+            preco: 75.00,
+            foto: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
+          },
+          {
+            nome: 'Postman',
+            categoria: 'Desenvolvimento',
+            descricao: 'Ferramenta completa para design, documentação e testes automatizados de APIs RESTful.',
+            preco: 0,
+            foto: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80',
+          },
+          {
+            nome: 'Slack',
+            categoria: 'Comunicação',
+            descricao: 'Canal de comunicação corporativo em tempo real para equipes modernas e ágeis.',
+            preco: 38.50,
+            foto: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
+          },
+        ]);
+        console.log(' Catálogo inicial populado com 5 aplicativos de demonstração');
+      }
+
       app.listen(PORT, () => {
         console.log(` Servidor rodando com sucesso na porta ${PORT}`);
         console.log(` Health check: http://localhost:${PORT}/api/health`);

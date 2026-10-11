@@ -15,10 +15,22 @@ if (!cached) {
  * @returns {Promise<mongoose.Connection>}
  */
 async function connectDB() {
-  const uri = process.env.MONGODB_URI;
+  let uri = process.env.MONGODB_URI;
 
   if (!uri) {
-    throw new Error('A variável de ambiente MONGODB_URI não foi definida.');
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('A variável de ambiente MONGODB_URI não foi definida para o ambiente de produção.');
+    }
+
+    // Inicialização amigável de instância MongoDB para desenvolvimento local sem travar o desenvolvedor
+    if (!global.localDevMongoInstance) {
+      console.log('⚡ MONGODB_URI não definida. Inicializando instância MongoDB para desenvolvimento local...');
+      const { MongoMemoryServer } = require('mongodb-memory-server');
+      global.localDevMongoInstance = await MongoMemoryServer.create();
+    }
+    uri = global.localDevMongoInstance.getUri();
+    process.env.MONGODB_URI = uri;
+    console.log(`💡 Conectado a instância MongoDB de desenvolvimento. Para produção Atlas, configure MONGODB_URI no .env`);
   }
 
   if (cached.conn) {
