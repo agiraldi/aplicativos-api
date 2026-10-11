@@ -2,7 +2,9 @@
  * Middleware centralizado de tratamento de erros da API.
  */
 function errorHandler(err, req, res, next) {
-  console.error('[API Error]:', err);
+  if (process.env.NODE_ENV !== 'test') {
+    console.error('[API Error]:', err);
+  }
 
   // Erro de validação do Mongoose
   if (err.name === 'ValidationError') {
